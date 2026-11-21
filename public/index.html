@@ -58,10 +58,10 @@ a.btn{margin-top:auto;text-align:center;text-decoration:none;color:var(--ac);bor
 </div>
 <details id="add"><summary>➕ Adicionar casa</summary>
 <div class="af">
+<label class="full">Cole aqui o texto copiado da página do Airbnb<textarea id="a_text" rows="7" placeholder="Abra o anúncio, copie o texto da página e cole aqui. Se incluir o link, ele também será preenchido." style="font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px"></textarea></label>
+<div class="full"><button type="button" id="a_parse">Extrair dados do texto copiado</button> <span id="a_text_status" class="warn"></span></div>
 <label class="full">Link do Airbnb<input id="a_url" placeholder="https://www.airbnb.com.br/rooms/..."></label>
-<div class="full"><button type="button" id="a_import">Ler anúncio e preencher dados</button> <span id="a_import_status" class="warn"></span></div>
-<label class="full">Ou cole o texto copiado da página do Airbnb<textarea id="a_text" rows="7" placeholder="Copie o texto da página do anúncio e cole aqui. Não precisa formatar." style="font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px"></textarea></label>
-<div class="full"><button type="button" id="a_parse" class="ghost">Preencher a partir do texto</button> <span id="a_text_status" class="warn"></span></div>
+<div class="full"><button type="button" id="a_import" class="ghost">Tentar obter alguns dados só pelo link</button> <span id="a_import_status" class="warn"></span></div>
 <label>Nome<input id="a_t"></label>
 <label>Local (bairro · cidade)<input id="a_loc"></label>
 <label>Região/cidade (p/ filtro)<input id="a_reg" placeholder="ex.: Guarujá"></label>
@@ -167,8 +167,15 @@ function listingTextFields(text){
 var lines=text.split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean),flat=text.replace(/\s+/g," "),lower=flat.toLowerCase(),out={};
 var share=lines.findIndex(function(x){return x.toLowerCase()==="compartilhar"});
 if(share>0)out.a_t=lines[share-1];
+if(!out.a_t){var title=lines.find(function(x){return /(?:dormitórios|quartos?).{0,50}(?:ar|piscina|gourmet)|(?:casa|apartamento|chácara).{0,80}(?:praia|piscina|quartos?)/i.test(x)});if(title)out.a_t=title}
+var listingUrl=text.match(/https?:\/\/(?:www\.)?airbnb\.[^\s<>"']+/i);
+if(listingUrl)out.a_url=listingUrl[0].replace(/[),.;]+$/,"");
 var summary=text.match(/(\d+)\s*hóspedes?\s*(\d+)\s*quartos?\s*(\d+)\s*camas?\s*([\d.,]+)\s*banheiros?/i);
 if(summary){out.a_cap=parseInt(summary[1],10);out.a_q=parseInt(summary[2],10);out.a_c=parseInt(summary[3],10);out.a_b=summary[4].replace(".",",")}
+if(out.a_cap===undefined){var guests=text.match(/(\d+)\s*hóspedes?/i);if(guests)out.a_cap=parseInt(guests[1],10)}
+if(out.a_q===undefined){var rooms=text.match(/(\d+)\s*(?:quartos?|dormitórios)/i);if(rooms)out.a_q=parseInt(rooms[1],10)}
+if(out.a_c===undefined){var bedsCount=text.match(/(\d+)\s*camas?/i);if(bedsCount)out.a_c=parseInt(bedsCount[1],10)}
+if(out.a_b===undefined){var baths=text.match(/([\d.,]+)\s*banheiros?/i);if(baths)out.a_b=baths[1].replace(".",",")}
 var maxGuests=text.match(/(?:nossa\s+)?limita(?:ção|mos)?[^.\n]{0,80}?(\d+)\s*(?:pessoas|hóspedes)/i);
 if(maxGuests)out.a_cap=parseInt(maxGuests[1],10);
 var where=lines.findIndex(function(x){return x.toLowerCase()==="onde você estará"}),place=where>=0?lines[where+1]:"";
@@ -219,7 +226,7 @@ var text=$("a_text").value.trim();
 if(!text){$("a_text_status").textContent="Cole o texto do anúncio primeiro."; $("a_text").focus();return}
 var fields=listingTextFields(text),count=Object.keys(fields).length;
 setListingFields(fields,true);
-$("a_text_status").textContent=count?"Campos encontrados preenchidos. Confira antes de adicionar; alguns detalhes talvez precisem de ajuste.":"Não encontrei dados reconhecíveis; tente copiar também as informações principais do anúncio.";
+$("a_text_status").textContent=count?"Preenchi "+count+" campos encontrados. Confira os campos abaixo e clique em Adicionar casa; o que não apareceu no texto ficará em branco.":"Não encontrei dados reconhecíveis; copie também as informações principais do anúncio.";
 });
 $("a_import").addEventListener("click",function(){
 var button=$("a_import"),link=$("a_url").value.trim();

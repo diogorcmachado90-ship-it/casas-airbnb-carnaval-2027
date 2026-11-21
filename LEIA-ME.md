@@ -46,7 +46,7 @@ Instale e configure o ngrok (https://ngrok.com) e rode:
 Mande ao grupo o endereço `https://...` que ele mostrar.
 
 ## 4. Adicionar uma casa pelo anúncio
-No site, abra **Adicionar casa**. Você pode colar o link e clicar em **Ler anúncio e preencher dados** ou copiar o texto visível da página do Airbnb, colá-lo na caixa de texto e clicar em **Preencher a partir do texto**. Confira os campos preenchidos, ajuste o que faltar e clique em **Adicionar casa**. Se o Airbnb bloquear a leitura do link, colar o texto costuma trazer mais informações. O preço só será importado se estiver no texto; confirme datas e hóspedes. Camas, comodidades e distâncias podem precisar de revisão.
+No site, abra **Adicionar casa**. O método recomendado é copiar o texto visível da página do Airbnb, colá-lo na caixa de texto e clicar em **Extrair dados do texto copiado**. Confira os campos preenchidos, ajuste o que faltar e clique em **Adicionar casa**. O botão **Tentar obter alguns dados só pelo link** pode retornar menos informações, pois o Airbnb nem sempre expõe os detalhes. O preço só será importado se estiver no texto; confirme datas e hóspedes. Camas, comodidades e distâncias também podem precisar de revisão.
 
 ## 5. Importante
 - Seu computador precisa ficar ligado, com o servidor (e o túnel) rodando, enquanto o grupo usa.
