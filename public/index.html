@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casas do Carnaval 2027 — comparação</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f4ef;--card:#fff;--tx:#1d2330;--mut:#6a7183;--bd:#e3dfd5;--ac:#e4572e;--ok:#1f8a5b;--chip:#efece4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#14171f;--card:#1e222d;--tx:#eceff5;--mut:#9aa2b5;--bd:#2f3544;--ac:#ff7a54;--ok:#4cc58d;--chip:#2a2f3c}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#14171f;--card:#1e222d;--tx:#eceff5;--mut:#9aa2b5;--bd:#2f3544;--ac:#ff7a54;--ok:#4cc58d;--chip:#2a2f3c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+h1{margin:0 0 4px;font-size:1.6rem}
+.sub{color:var(--mut);margin:0 0 16px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:end;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:18px}
+.bar label{display:flex;flex-direction:column;font-size:.8rem;color:var(--mut);gap:4px}
+input,select{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;min-width:0}
+.bar input{width:90px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.loc{display:inline-block;background:var(--ac);color:#fff;font-weight:700;border-radius:8px;padding:4px 10px;font-size:.9rem;align-self:flex-start}
+.card h2{margin:0;font-size:1.05rem;line-height:1.3}
+.dist{color:var(--mut);font-size:.9rem;margin:-4px 0 0}
+.facts{display:flex;flex-wrap:wrap;gap:6px}
+.facts span{background:var(--chip);border-radius:999px;padding:3px 10px;font-size:.8rem}
+.am{margin:0;padding-left:18px;font-size:.88rem}
+.warn{margin:0;font-size:.82rem;color:var(--mut)}
+.price{border-top:1px dashed var(--bd);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.price label{font-size:.8rem;color:var(--mut)}
+.price input{width:100%}
+.pp{font-size:1.5rem;font-weight:800;color:var(--ok)}
+.pp small{font-size:.8rem;font-weight:500;color:var(--mut)}
+.pp.none{color:var(--mut);font-size:1rem;font-weight:500}
+a.btn{margin-top:auto;text-align:center;text-decoration:none;color:var(--ac);border:1px solid var(--ac);border-radius:10px;padding:8px;font-weight:600}
+.flt{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:12px}.chk{flex-direction:row!important;align-items:center;gap:6px!important;color:var(--tx)!important;font-size:.9rem!important}.chk input{width:auto}.bar input.w{width:130px}details{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 14px;margin-bottom:18px}summary{cursor:pointer;font-weight:700}.af{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:12px}.af label{display:flex;flex-direction:column;font-size:.8rem;color:var(--mut);gap:4px}.af .full{grid-column:1/-1}button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--ac);background:var(--ac);color:#fff;padding:8px 14px;font-weight:600}button.ghost{background:transparent;color:var(--mut);border-color:var(--bd)}.rm{align-self:flex-end;padding:4px 10px;font-size:.8rem}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.cnt{color:var(--mut);font-size:.85rem;margin:0 0 10px}.key{font-size:.88rem;display:flex;flex-direction:column;gap:2px}.beds{font-size:.85rem}.beds ul{margin:4px 0 0;padding-left:18px}.note{color:var(--mut);font-size:.82rem;margin-top:18px}
+</style>
+</head>
+<body>
+<main>
+<h1>🏖️ Casas do Carnaval 2027</h1>
+<p class="sub">5 a 10 de fevereiro · 5 noites · compare e divida o valor entre o grupo</p>
+<div class="bar">
+<label>Pessoas<input id="n" type="number" min="1" value="10"></label>
+<label>Ordenar por<select id="s"><option value="pp">Menor valor por pessoa</option><option value="nota">Melhor nota</option><option value="reg">Região</option></select></label>
+<label>Buscar<input id="q" class="w" type="search" placeholder="nome ou lugar"></label>
+<label>Região<select id="r"><option value="">Todas</option></select></label>
+<label>Máx. por pessoa (R$)<input id="mx" class="w" type="number" min="0" placeholder="sem limite"></label>
+<label>Nota mínima<select id="nm"><option value="0">Qualquer</option><option value="4.8">4,8+</option><option value="4.9">4,9+</option><option value="5">5,0</option></select></label>
+<label class="chk"><input id="fp" type="checkbox"> Perto da praia (≤ ~400 m)</label>
+<label class="chk"><input id="fc" type="checkbox"> Cabe o grupo</label>
+<label class="chk"><input id="fv" type="checkbox"> Só com preço</label>
+<label class="chk"><input id="fpi" type="checkbox"> Piscina</label>
+<label class="chk"><input id="fch" type="checkbox"> Churrasqueira</label>
+<label class="chk"><input id="far" type="checkbox"> Ar em todos os quartos</label>
+</div>
+<details id="add"><summary>➕ Adicionar casa</summary>
+<div class="af">
+<label class="full">Link do Airbnb<input id="a_url" placeholder="https://www.airbnb.com.br/rooms/..."></label>
+<label>Nome<input id="a_t"></label>
+<label>Local (bairro · cidade)<input id="a_loc"></label>
+<label>Região/cidade (p/ filtro)<input id="a_reg" placeholder="ex.: Guarujá"></label>
+<label>Distância da praia<input id="a_d" placeholder="ex.: 300 m"></label>
+<label>Total da estadia (R$)<input id="a_p" type="number" min="0"></label>
+<label>Capacidade<input id="a_cap" type="number" min="1"></label>
+<label>Quartos<input id="a_q" type="number" min="0"></label>
+<label>Nota<input id="a_n" type="number" step="0.01" min="0" max="5"></label>
+<label class="full">Camas por quarto (um quarto por linha)<textarea id="a_bd" rows="4" placeholder="Quarto 1: 1 casal + 1 solteiro&#10;Quarto 2: 2 solteiro" style="font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px"></textarea></label>
+<label>Ar-condicionado<input id="a_ar" list="dl_ar" placeholder="ex.: Todos os quartos"></label>
+<label>Piscina<input id="a_pi" list="dl_pi" placeholder="ex.: Privativa aquecida"></label>
+<label>Churrasqueira<input id="a_ch" list="dl_ch" placeholder="Sim / Não"></label>
+<datalist id="dl_ar"><option value="Todos os quartos"><option value="Alguns quartos"><option value="Não tem"></datalist>
+<datalist id="dl_pi"><option value="Privativa"><option value="Privativa aquecida"><option value="Compartilhada"><option value="Não tem"></datalist>
+<datalist id="dl_ch"><option value="Sim"><option value="Não"></datalist>
+<label class="full">Observações<input id="a_w"></label>
+<label class="chk"><input id="a_pe" type="checkbox"> Perto da praia (≤ ~400 m)</label>
+<div class="full"><button id="a_go">Adicionar</button></div>
+</div></details>
+<p class="cnt" id="stt"></p>
+<p class="cnt"><span id="ct"></span> <button id="rs" class="ghost rm" style="display:none">Restaurar removidas</button></p>
+<div id="g" class="grid"></div>
+<p class="note">Os preços não vêm automaticamente: abra o link, veja o <b>total da estadia</b> (já com taxas) para as datas e digite no campo da casa. O valor por pessoa é calculado na hora. Casas e valores ficam salvos no servidor e todo mundo que abrir o endereço vê a mesma lista.</p>
+</main>
+<script>
+var H=[
+{id:"1292812537444698286",bd:["Quarto 1: 2 solteiro", "Quarto 2: 2 solteiro", "Quarto 3: 1 casal", "Quarto 4: 2 solteiro", "(5º quarto não detalhado no anúncio)"],ar:"Todas as suítes",pi:"Aquecida + sauna",ch:"Sim (+ cozinha externa)",t:"Refúgio no Paraíso",reg:"Bertioga",loc:"Riviera de São Lourenço · Bertioga",d:"Praia: distância não informada",cap:14,q:5,c:7,b:"5,5",nota:5.0,av:9,am:["Piscina aquecida e sauna","Churrasqueira e cozinha externa","5 suítes com ar-condicionado","Garagem p/ 4 carros · aceita pets"],w:"Levar roupa de cama e banho (aluguel à parte)."},
+{id:"549918684018771520",bd:["Quarto 1: 3 solteiro", "Quarto 2: 1 casal + 1 solteiro", "Quarto 3: 1 queen + 2 solteiro", "Quarto 4: 1 queen + 1 solteiro", "(5º quarto não detalhado no anúncio)"],ar:"Não informado",pi:"Privativa",ch:"Sim (cozinha externa)",t:"Casa Riviera de São Lourenço com serviço de praia",reg:"Bertioga",loc:"Riviera de São Lourenço (Módulo 30) · Bertioga",d:"≈20 min a pé da Praia de São Lourenço",cap:12,q:5,c:10,b:"6,5",nota:5.0,av:18,am:["Piscina privativa","Cozinha externa com churrasqueira","5 suítes (1 no térreo)","Top 5% do Airbnb"],w:"Serviço de praia citado no título; confirme com a anfitriã."},
+{id:"1055099706985078914",bd:["Quarto 1: 1 casal + 1 solteiro", "Quarto 2: 1 casal", "Quarto 3: 2 solteiro", "Quarto 4: 1 queen", "Quarto 5: 1 queen"],ar:"4 de 5 quartos + sala",pi:"Privativa com cascata (aquecer: R$ 350)",ch:"Sim",pe:1,t:"Casa com piscina a 50 m da praia",reg:"Guarujá",loc:"Praia da Enseada · Guarujá",d:"≈50 m da Praia da Enseada",cap:11,q:5,c:7,b:"5,5",nota:4.94,av:16,am:["Piscina com cascata e jatos","Churrasqueira e espaço gourmet","Ar-condicionado em 4 quartos + sala","Estacionamento p/ 3 carros"],w:"Capacidade máx. 11. Sem roupa de cama/toalhas. Aquecer piscina: R$ 350 (opcional)."},
+{id:"1224049333705885625",bd:["Suíte 1: 1 king", "Suíte 2: 1 queen", "Suíte 3: 1 queen", "Suíte 4: 1 queen", "Suíte 5: 1 queen", "Suíte 6: 1 queen"],ar:"Todas as 6 suítes",pi:"Aquecida",ch:"Sim",pe:1,t:"Casa alto padrão com 6 suítes",reg:"Guarujá",loc:"Praia da Enseada · Guarujá",d:"≈50 m da Praia da Enseada",cap:12,q:6,c:6,b:"6",nota:5.0,av:30,am:["Piscina aquecida","Área gourmet com churrasqueira","6 suítes com ar e TV streaming","Enxoval completo incluso · Superhost"],w:"Garagem p/ só 2 carros. Limpeza (R$ 200/dia) e cozinheira (R$ 300/dia) opcionais."},
+{id:"29059432",bd:["Quarto 1: 1 king", "Quarto 2: 1 queen", "Quarto 3: 1 queen + 1 solteiro", "Quarto 4: 1 king + 1 solteiro", "Quarto 5: 1 casal"],ar:"Todos os quartos + sala de TV",pi:"Privativa + sauna",ch:"Sim",pe:1,t:"Linda casa de praia no Jardim Acapulco",reg:"Guarujá",loc:"Jardim Acapulco (Praia de Pernambuco) · Guarujá",d:"≈400 m da praia (casa a ~1 km da portaria)",cap:12,q:5,c:7,b:"7",nota:4.97,av:217,am:["Piscina privativa e sauna","Terreno de 1.000 m², churrasqueira","Ar-condicionado nos quartos","Roupa de cama e toalhas inclusas · Superhost"],w:"Condomínio fechado: documentos de todos os hóspedes. Sem festas."},
+{id:"1064437674513451197",bd:["Quarto 1: 1 casal", "Quarto 2: 1 casal + 1 solteiro", "Quarto 3: 2 solteiro", "Quarto 4: 1 casal + 1 solteiro", "Quarto 5: 1 casal"],ar:"Nas 5 suítes",pi:"Privativa + hidromassagem",ch:"Sim",pe:1,t:"Casa Alto Padrão Jardim Acapulco (NoMar)",reg:"Guarujá",loc:"Jardim Acapulco (Praia de Pernambuco) · Guarujá",d:"≈5 min a pé da Praia de Pernambuco",cap:12,q:5,c:8,b:"5,5",nota:5.0,av:23,am:["Piscina, spa/hidromassagem e prainha","5 suítes com terraço e ar","Área gourmet equipada","Roupa de cama inclusa · Superhost"],w:"Não fornece toalhas. Só carros (sem motos)."},
+{id:"27505566",bd:["Quarto 1: 1 casal + 1 beliche (+ berço)", "Quarto 2: 1 casal + 1 beliche", "Quarto 3: 1 casal + 2 beliches", "Quarto 4: 1 casal + 1 solteiro", "Quarto 5: 1 casal + 1 beliche"],ar:"Todos os quartos",pi:"Privativa + hidromassagem",ch:"Sim (+ forno de pizza)",t:"Casa 5 quartos, piscina, 800 m da praia",reg:"São Sebastião",loc:"Maresias (entrada 10) · São Sebastião",d:"≈700–800 m da praia",cap:21,q:5,c:16,b:"5",nota:4.84,av:136,am:["Piscina, hidromassagem, forno de pizza","Mesa de bilhar, 2 cozinhas","Ar-condicionado em todos os quartos","6 vagas · aceita pets"],w:"Até 10 hóspedes o preço é o mesmo. Sem roupa de cama. Checkout seg–sex às 12h."},
+{id:"1135530183652371684",bd:["Não detalhado no anúncio (7 camas em 5 suítes)"],ar:"Todas as 5 suítes (independente)",pi:"Privativa com cascata",ch:"Sim (+ forno a lenha)",pe:1,t:"200 m da praia, 5 suítes, condomínio fechado",reg:"Ubatuba",loc:"Praia da Lagoinha (cond. Salga) · Ubatuba",d:"≈200 m do mar (5 min a pé)",cap:11,q:5,c:7,b:"5",nota:4.92,av:13,am:["Piscina com cascata","Área gourmet com forno a lenha","5 suítes com ar independente","5 vagas · aceita pets"],w:"Só 13 avaliações."},
+{id:"45939716",bd:["Quarto 1: 1 queen", "Quarto 2: 1 queen + 2 solteiro", "Quarto 3: 1 casal + 1 solteiro + 1 beliche", "Quarto 4: 1 queen + 2 solteiro", "Quarto 5: 1 casal"],ar:"Todas as 5 suítes",pi:"Compartilhada do condomínio (adulto e infantil)",ch:"Sim (a carvão, na varanda)",pe:1,t:"Casa condomínio, 5 suítes, moderna",reg:"São Sebastião",loc:"Camburizinho / Camburi · São Sebastião",d:"≈300 m da praia (5 min a pé)",cap:10,q:5,c:12,b:"5,5",nota:4.95,av:19,am:["Serviço de praia (cadeiras e guarda-sol)","Piscinas, quadras e playground do condomínio","5 suítes com ar · lavadora e secadora","Sinuca, pebolim e ping-pong"],w:"Capacidade de exatamente 10. Só 3 vagas. Piscina compartilhada."},
+{id:"1665206061218453044",bd:["Quarto 1: 1 king + 1 queen", "Quarto 2: 2 queen", "Quarto 3: 2 queen + 1 rede", "Quarto 4: 2 queen", "Quarto 5: 1 queen", "Quarto 6: 1 casal"],ar:"Todos os quartos",pi:"Sim + hidromassagem",ch:"Sim (+ fogão a lenha)",t:"Casa Residencial Marina Guarujá",reg:"Guarujá",loc:"Residencial Marina · canal de Bertioga · Guarujá",d:"Praias de condomínios a alguns km (de carro) · píer privativo",cap:15,q:6,c:10,b:"5,5",nota:5.0,av:3,am:["Piscina e hidromassagem","Píer com flutuante","Todos os quartos com TV e ar","Varanda com churrasqueira"],w:"Só 3 avaliações. Sem roupa de cama e banho."}
+];
+var ST={P:{},R:[],C:[]};
+try{var x=JSON.parse(localStorage.getItem("carnaval_v2")||"null");if(x){ST.P=x.P||{};ST.R=x.R||[];ST.C=x.C||[]}else{ST.P=JSON.parse(localStorage.getItem("carnaval_precos")||"{}")}}catch(e){}
+function sv(){try{localStorage.setItem("carnaval_v2",JSON.stringify(ST))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function esc(t){var d=document.createElement("div");d.textContent=t==null?"":String(t);return d.innerHTML}
+function brl(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function N(){return Math.max(1,parseInt($("n").value)||10)}
+function all(){return H.filter(function(h){return ST.R.indexOf(h.id)<0}).concat(ST.C)}
+function pp(h){var v=parseFloat(ST.P[h.id]);return v>0?v/N():null}
+function url(h){if(h.url)return /^https?:\/\//.test(h.url)?h.url:"#";return"https://www.airbnb.com.br/rooms/"+h.id+"?adults=10&check_in=2027-02-05&check_out=2027-02-10"}
+function regs(){var r=[];all().forEach(function(h){if(h.reg&&r.indexOf(h.reg)<0)r.push(h.reg)});return r.sort()}
+function fillRegs(){var c=$("r").value,o='<option value="">Todas</option>';regs().forEach(function(r){o+='<option>'+esc(r)+'</option>'});$("r").innerHTML=o;$("r").value=regs().indexOf(c)>=0?c:""}
+function KEY(h){var nf="<i>não informado</i>";
+var b=(h.bd||[]).length?'<div class="beds"><b>🛏️ Camas por quarto</b><ul>'+h.bd.map(function(x){return"<li>"+esc(x)+"</li>"}).join("")+'</ul></div>':'<div class="beds"><b>🛏️ Camas por quarto:</b> '+nf+'</div>';
+return'<div class="key"><div>❄️ <b>Ar-condicionado:</b> '+(h.ar?esc(h.ar):nf)+'</div><div>🏊 <b>Piscina:</b> '+(h.pi?esc(h.pi):nf)+'</div><div>🍖 <b>Churrasqueira:</b> '+(h.ch?esc(h.ch):nf)+'</div></div>'+b}
+function render(){
+var s=$("s").value,q=$("q").value.toLowerCase(),r=$("r").value,mx=parseFloat($("mx").value),nm=parseFloat($("nm").value);
+var L=all().filter(function(h){
+if(q&&(h.t+" "+h.loc+" "+h.reg).toLowerCase().indexOf(q)<0)return false;
+if(r&&h.reg!==r)return false;
+if(h.nota!=null&&h.nota<nm)return false;
+if(nm>0&&h.nota==null)return false;
+if($("fp").checked&&!h.pe)return false;
+if($("fc").checked&&h.cap&&h.cap<N())return false;
+var v=pp(h);
+if($("fv").checked&&v===null)return false;
+if($("fpi").checked&&!(h.pi&&!/^n[ãa]o/i.test(h.pi)))return false;
+if($("fch").checked&&!/^sim/i.test(h.ch||""))return false;
+if($("far").checked&&!/^(todos|todas|nas )/i.test(h.ar||""))return false;
+if(mx>0&&(v===null||v>mx))return false;
+return true});
+L.sort(function(a,b){
+if(s==="pp"){var x=pp(a),y=pp(b);if(x===null&&y===null)return(b.nota||0)-(a.nota||0);if(x===null)return 1;if(y===null)return -1;return x-y}
+if(s==="nota")return(b.nota||0)-(a.nota||0)||(b.av||0)-(a.av||0);
+return(a.reg||"").localeCompare(b.reg||"")||(b.nota||0)-(a.nota||0)});
+$("ct").textContent=L.length+" de "+all().length+" casas";
+$("rs").style.display=ST.R.length?"inline-block":"none";
+var g=$("g");g.innerHTML="";
+if(!L.length){g.innerHTML='<p class="sub">Nenhuma casa com esses filtros.</p>'}
+L.forEach(function(h){
+var c=document.createElement("article");c.className="card";
+var v=pp(h),f="";
+if(h.cap)f+='<span>👥 até '+esc(h.cap)+'</span>';
+if(h.q!=null&&h.q!=="")f+='<span>🛏️ '+esc(h.q)+' quartos</span>';
+if(h.c)f+='<span>'+esc(h.c)+' camas</span>';
+if(h.b)f+='<span>🚿 '+esc(h.b)+' banh.</span>';
+if(h.nota!=null&&h.nota!=="")f+='<span>⭐ '+String(h.nota).replace(".",",")+(h.av?' ('+esc(h.av)+')':'')+'</span>';
+var am=(h.am||[]).map(function(a){return"<li>"+esc(a)+"</li>"}).join("");
+c.innerHTML='<div class="top"><span class="loc">📍 '+esc(h.loc||"Local não informado")+'</span><button class="ghost rm" title="Remover">✕ Remover</button></div><h2>'+esc(h.t)+'</h2>'+
+(h.d?'<p class="dist">🏖️ '+esc(h.d)+'</p>':'')+'<div class="facts">'+f+'</div>'+KEY(h)+(am?'<ul class="am">'+am+'</ul>':'')+
+(h.w?'<p class="warn">'+esc(h.w)+'</p>':'')+(h.cap&&h.cap<N()?'<p class="warn">⚠️ Capacidade menor que o grupo.</p>':'')+
+'<div class="price"><label>Total da estadia (R$)</label><input type="number" min="0" step="1" inputmode="numeric" placeholder="ex.: 12000" value="'+esc(ST.P[h.id]||"")+'">'+
+'<div class="pp'+(v===null?' none':'')+'">'+(v===null?'Digite o total para ver por pessoa':brl(v)+' <small>por pessoa ('+N()+')</small>')+'</div></div>'+
+'<a class="btn" target="_blank" rel="noopener" href="'+esc(url(h))+'">Ver fotos no Airbnb ↗</a>';
+c.querySelector("input").addEventListener("change",function(e){setPrice(h.id,e.target.value)});
+c.querySelector(".rm").addEventListener("click",function(){
+removeHouse(h)});
+g.appendChild(c)})}
+["n","s","q","r","mx","nm","fp","fc","fv","fpi","fch","far"].forEach(function(i){$(i).addEventListener("input",render)});
+$("rs").addEventListener("click",function(){restoreAll()});
+$("a_go").addEventListener("click",function(){
+var t=$("a_t").value.trim(),u=$("a_url").value.trim();
+if(!t&&!u){$("a_t").placeholder="Informe o nome ou o link";$("a_t").focus();return}
+var id="c"+Date.now();
+var h={id:id,custom:1,url:u,t:t||"Casa sem nome",loc:$("a_loc").value.trim(),reg:$("a_reg").value.trim(),d:$("a_d").value.trim(),
+cap:parseInt($("a_cap").value)||null,q:$("a_q").value,nota:$("a_n").value?parseFloat($("a_n").value):null,w:$("a_w").value.trim(),bd:$("a_bd").value.split("\n").map(function(x){return x.trim()}).filter(Boolean),ar:$("a_ar").value.trim(),pi:$("a_pi").value.trim(),ch:$("a_ch").value.trim(),pe:$("a_pe").checked?1:0,am:[]};
+var pv=$("a_p").value;
+["a_url","a_t","a_loc","a_reg","a_d","a_p","a_cap","a_q","a_n","a_w","a_bd","a_ar","a_pi","a_ch"].forEach(function(i){$(i).value=""});$("a_pe").checked=false;
+addHouse(h,pv)});
+var PEND=0,LAST="";
+function setStatus(t){$("stt").textContent=t}
+function werr(){setStatus("⚠️ Não deu para salvar. Veja se o servidor está ligado.")}
+function rr(){var a=document.activeElement;if(a&&a.tagName==="INPUT"&&a.closest&&a.closest(".price")){PEND=1;return}render()}
+document.addEventListener("focusout",function(){if(PEND){PEND=0;setTimeout(render,50)}});
+function api(m,u,b){return fetch(u,{method:m,headers:{"Content-Type":"application/json"},body:b?JSON.stringify(b):undefined}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
+function apply(d){ST.P=d.P||{};ST.R=d.R||[];ST.C=d.C||[];fillRegs();rr()}
+function load(){api("GET","/api/state").then(function(d){var j=JSON.stringify(d);if(j!==LAST){LAST=j;apply(d)}setStatus("🟢 Conectado ao servidor: todos veem a mesma lista (atualiza sozinha)")}).catch(function(){setStatus("⚠️ Sem conexão com o servidor")})}
+function setPrice(id,v){ST.P[id]=v;render();api("PUT","/api/price",{id:id,v:v}).catch(werr)}
+function removeHouse(h){if(h.custom){ST.C=ST.C.filter(function(k){return k.id!==h.id})}else if(ST.R.indexOf(h.id)<0){ST.R.push(h.id)}fillRegs();render();api("POST","/api/remove",{id:h.id,custom:!!h.custom}).catch(werr)}
+function restoreAll(){ST.R=[];fillRegs();render();api("POST","/api/restore").catch(werr)}
+function addHouse(h,p){ST.C.push(h);if(p)ST.P[h.id]=p;fillRegs();render();api("POST","/api/house",{house:h,price:p}).catch(werr)}
+ST={P:{},R:[],C:[]};
+fillRegs();render();load();setInterval(load,4000);
+</script>
+</body>
+</html>
