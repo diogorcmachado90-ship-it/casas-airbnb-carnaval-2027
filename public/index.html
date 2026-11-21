@@ -60,6 +60,8 @@ a.btn{margin-top:auto;text-align:center;text-decoration:none;color:var(--ac);bor
 <div class="af">
 <label class="full">Link do Airbnb<input id="a_url" placeholder="https://www.airbnb.com.br/rooms/..."></label>
 <div class="full"><button type="button" id="a_import">Ler anúncio e preencher dados</button> <span id="a_import_status" class="warn"></span></div>
+<label class="full">Ou cole o texto copiado da página do Airbnb<textarea id="a_text" rows="7" placeholder="Copie o texto da página do anúncio e cole aqui. Não precisa formatar." style="font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px"></textarea></label>
+<div class="full"><button type="button" id="a_parse" class="ghost">Preencher a partir do texto</button> <span id="a_text_status" class="warn"></span></div>
 <label>Nome<input id="a_t"></label>
 <label>Local (bairro · cidade)<input id="a_loc"></label>
 <label>Região/cidade (p/ filtro)<input id="a_reg" placeholder="ex.: Guarujá"></label>
@@ -67,8 +69,12 @@ a.btn{margin-top:auto;text-align:center;text-decoration:none;color:var(--ac);bor
 <label>Total da estadia (R$)<input id="a_p" type="number" min="0"></label>
 <label>Capacidade<input id="a_cap" type="number" min="1"></label>
 <label>Quartos<input id="a_q" type="number" min="0"></label>
+<label>Camas<input id="a_c" type="number" min="0"></label>
+<label>Banheiros<input id="a_b" type="text" placeholder="ex.: 4,5"></label>
 <label>Nota<input id="a_n" type="number" step="0.01" min="0" max="5"></label>
+<label>Número de avaliações<input id="a_av" type="number" min="0"></label>
 <label class="full">Camas por quarto (um quarto por linha)<textarea id="a_bd" rows="4" placeholder="Quarto 1: 1 casal + 1 solteiro&#10;Quarto 2: 2 solteiro" style="font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px"></textarea></label>
+<label class="full">Comodidades/destaques (uma por linha)<textarea id="a_am" rows="3" placeholder="Piscina, Wi-Fi, estacionamento..." style="font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px"></textarea></label>
 <label>Ar-condicionado<input id="a_ar" list="dl_ar" placeholder="ex.: Todos os quartos"></label>
 <label>Piscina<input id="a_pi" list="dl_pi" placeholder="ex.: Privativa aquecida"></label>
 <label>Churrasqueira<input id="a_ch" list="dl_ch" placeholder="Sim / Não"></label>
@@ -82,7 +88,7 @@ a.btn{margin-top:auto;text-align:center;text-decoration:none;color:var(--ac);bor
 <p class="cnt" id="stt"></p>
 <p class="cnt"><span id="ct"></span> <button id="rs" class="ghost rm" style="display:none">Restaurar removidas</button></p>
 <div id="g" class="grid"></div>
-<p class="note">Os preços não vêm automaticamente: abra o link, veja o <b>total da estadia</b> (já com taxas) para as datas e digite no campo da casa. O valor por pessoa é calculado na hora. Casas e valores ficam salvos no servidor e todo mundo que abrir o endereço vê a mesma lista.</p>
+<p class="note">Para adicionar uma casa, tente ler o link ou cole o texto copiado do anúncio; confira os campos antes de adicionar. O preço só é preenchido se estiver visível no texto e corresponder às datas e hóspedes desejados. Casas e valores ficam salvos no servidor e todos que abrirem o endereço veem a mesma lista.</p>
 </main>
 <script>
 var H=[
@@ -157,13 +163,71 @@ removeHouse(h)});
 g.appendChild(c)})}
 ["n","s","q","r","mx","nm","fp","fc","fv","fpi","fch","far"].forEach(function(i){$(i).addEventListener("input",render)});
 $("rs").addEventListener("click",function(){restoreAll()});
+function listingTextFields(text){
+var lines=text.split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean),flat=text.replace(/\s+/g," "),lower=flat.toLowerCase(),out={};
+var share=lines.findIndex(function(x){return x.toLowerCase()==="compartilhar"});
+if(share>0)out.a_t=lines[share-1];
+var summary=text.match(/(\d+)\s*hóspedes?\s*(\d+)\s*quartos?\s*(\d+)\s*camas?\s*([\d.,]+)\s*banheiros?/i);
+if(summary){out.a_cap=parseInt(summary[1],10);out.a_q=parseInt(summary[2],10);out.a_c=parseInt(summary[3],10);out.a_b=summary[4].replace(".",",")}
+var maxGuests=text.match(/(?:nossa\s+)?limita(?:ção|mos)?[^.\n]{0,80}?(\d+)\s*(?:pessoas|hóspedes)/i);
+if(maxGuests)out.a_cap=parseInt(maxGuests[1],10);
+var where=lines.findIndex(function(x){return x.toLowerCase()==="onde você estará"}),place=where>=0?lines[where+1]:"";
+if(!place){var placeMatch=text.match(/Espaço inteiro:[^\n]*?\bem\s+([^,\n]+),\s*Brasil/i);if(placeMatch)place=placeMatch[1]+", Brasil"}
+if(place){var parts=place.replace(/,\s*Brasil$/i,"").split(",").map(function(x){return x.trim()}).filter(Boolean);out.a_loc=parts.join(" · ");out.a_reg=parts[0]}
+var rating=text.match(/(?:Pontuação|Avaliado com):?\s*([\d,]+)\s*(?:de|\/)\s*5/i);
+if(rating)out.a_n=parseFloat(rating[1].replace(",","."));
+var reviews=text.match(/(\d+)\s*avaliações/i);
+if(reviews)out.a_av=parseInt(reviews[1],10);
+var price=text.match(/Total:\s*R\$\s*([\d.]+(?:,\d{2})?)/i);
+if(price)out.a_p=Number(price[1].replace(/\./g,"").replace(",","."));
+var distance=flat.match(/(?:cerca de|aproximadamente)\s*(\d+\s*(?:minutos?|metros?|m|km)[^.]*?(?:praia|mar)[^.]*)/i);
+if(distance)out.a_d="≈"+distance[1].trim();
+else if(/a dois quarteirões da praia/i.test(flat))out.a_d="A dois quarteirões da praia (distância exata não informada)";
+var sleepStart=lines.findIndex(function(x){return x.toLowerCase()==="onde você vai dormir"});
+var sleepEnd=lines.findIndex(function(x){return x.toLowerCase()==="o que esse lugar oferece"});
+if(sleepStart>=0){
+var sleepLines=lines.slice(sleepStart+1,sleepEnd>sleepStart?sleepEnd:undefined),beds=[];
+for(var i=0;i<sleepLines.length;i++){var room=sleepLines[i].match(/^quarto\s*(\d+)$/i);if(!room)continue;var j=i+1;
+while(j<sleepLines.length&&(!sleepLines[j]||new RegExp("^quarto\\s*"+room[1]+"$","i").test(sleepLines[j])))j++;
+if(j<sleepLines.length&&!/^quarto\s*\d+$/i.test(sleepLines[j])&&!/^\d+\s+de\s+\d+\s+páginas?$/i.test(sleepLines[j]))beds[Number(room[1])-1]="Quarto "+room[1]+": "+sleepLines[j]}
+out.a_bd=beds.filter(Boolean).join("\n");
+}
+var amenityStart=lines.findIndex(function(x){return x.toLowerCase()==="o que esse lugar oferece"});
+if(amenityStart>=0){
+var amenities=[];
+for(var a=amenityStart+1;a<lines.length&&!/^mostrar todas|^indisponível:/i.test(lines[a]);a++){
+if(!/^\d+\s+de\s+\d+\s+páginas?$/i.test(lines[a]))amenities.push(lines[a]);
+}
+out.a_am=amenities.join("\n");
+}
+if(/todos os (?:6 )?(?:dormitórios|quartos)[^.]{0,60}ar.?condicionado/i.test(flat))out.a_ar="Todos os quartos";
+else if(/ar.?condicionado/i.test(flat))out.a_ar="Mencionado no anúncio (quartos a confirmar)";
+if(/piscina.{0,50}privativa|privativa.{0,50}piscina/i.test(flat))out.a_pi="Privativa";
+else if(/piscina/i.test(lower))out.a_pi="Informada no anúncio (tipo a confirmar)";
+if(/churrasqueira|área de churrasco/i.test(lower))out.a_ch="Sim";
+var notes=[],linen=flat.match(/não (?:tem|temos|oferece|oferecemos|fornece|fornecemos) roupa de cama e banho[^.]*/i);
+if(linen)notes.push(linen[0].trim());
+if(summary&&maxGuests&&parseInt(summary[1],10)!==parseInt(maxGuests[1],10))notes.push("Resumo informa "+summary[1]+" hóspedes; anfitrião diz limite de "+maxGuests[1]+".");
+if(notes.length)out.a_w=notes.join(" ");
+return out;
+}
+function setListingFields(fields,overwrite){
+Object.keys(fields).forEach(function(id){var v=fields[id];if(v!==null&&v!==undefined&&v!==""&&(overwrite||!$(id).value))$(id).value=v});
+}
+$("a_parse").addEventListener("click",function(){
+var text=$("a_text").value.trim();
+if(!text){$("a_text_status").textContent="Cole o texto do anúncio primeiro."; $("a_text").focus();return}
+var fields=listingTextFields(text),count=Object.keys(fields).length;
+setListingFields(fields,true);
+$("a_text_status").textContent=count?"Campos encontrados preenchidos. Confira antes de adicionar; alguns detalhes talvez precisem de ajuste.":"Não encontrei dados reconhecíveis; tente copiar também as informações principais do anúncio.";
+});
 $("a_import").addEventListener("click",function(){
 var button=$("a_import"),link=$("a_url").value.trim();
 if(!link){$("a_import_status").textContent="Cole o link do anúncio primeiro."; $("a_url").focus();return}
 button.disabled=true;$("a_import_status").textContent="Lendo o anúncio…";
 api("POST","/api/airbnb-read",{url:link}).then(function(d){
 var h=d.house||{},fields={a_t:h.t,a_loc:h.loc,a_reg:h.reg,a_cap:h.cap,a_q:h.q,a_n:h.nota,a_w:h.w,a_ar:h.ar,a_pi:h.pi,a_ch:h.ch};
-Object.keys(fields).forEach(function(id){var v=fields[id];if(v!==null&&v!==undefined&&v!==""&&!$(id).value)$(id).value=v});
+setListingFields(fields,false);
 if(h.url)$("a_url").value=h.url;
 $("a_import_status").textContent="Dados encontrados preenchidos. Confira os campos; preço, camas e outros detalhes podem não estar no anúncio.";
 }).catch(function(e){$("a_import_status").textContent="Não foi possível ler: "+e.message}).then(function(){button.disabled=false});
@@ -173,9 +237,9 @@ var t=$("a_t").value.trim(),u=$("a_url").value.trim();
 if(!t&&!u){$("a_t").placeholder="Informe o nome ou o link";$("a_t").focus();return}
 var id="c"+Date.now();
 var h={id:id,custom:1,url:u,t:t||"Casa sem nome",loc:$("a_loc").value.trim(),reg:$("a_reg").value.trim(),d:$("a_d").value.trim(),
-cap:parseInt($("a_cap").value)||null,q:$("a_q").value,nota:$("a_n").value?parseFloat($("a_n").value):null,w:$("a_w").value.trim(),bd:$("a_bd").value.split("\n").map(function(x){return x.trim()}).filter(Boolean),ar:$("a_ar").value.trim(),pi:$("a_pi").value.trim(),ch:$("a_ch").value.trim(),pe:$("a_pe").checked?1:0,am:[]};
+cap:parseInt($("a_cap").value)||null,q:$("a_q").value,c:parseInt($("a_c").value)||null,b:$("a_b").value.trim(),nota:$("a_n").value?parseFloat($("a_n").value):null,av:parseInt($("a_av").value)||null,w:$("a_w").value.trim(),bd:$("a_bd").value.split("\n").map(function(x){return x.trim()}).filter(Boolean),am:$("a_am").value.split("\n").map(function(x){return x.trim()}).filter(Boolean),ar:$("a_ar").value.trim(),pi:$("a_pi").value.trim(),ch:$("a_ch").value.trim(),pe:$("a_pe").checked?1:0};
 var pv=$("a_p").value;
-["a_url","a_t","a_loc","a_reg","a_d","a_p","a_cap","a_q","a_n","a_w","a_bd","a_ar","a_pi","a_ch"].forEach(function(i){$(i).value=""});$("a_pe").checked=false;
+["a_url","a_text","a_t","a_loc","a_reg","a_d","a_p","a_cap","a_q","a_c","a_b","a_n","a_av","a_w","a_bd","a_am","a_ar","a_pi","a_ch"].forEach(function(i){$(i).value=""});$("a_pe").checked=false;$("a_import_status").textContent="";$("a_text_status").textContent="";
 addHouse(h,pv)});
 var PEND=0,LAST="";
 function setStatus(t){$("stt").textContent=t}
