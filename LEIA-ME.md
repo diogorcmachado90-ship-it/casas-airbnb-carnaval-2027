@@ -48,7 +48,10 @@ Mande ao grupo o endereço `https://...` que ele mostrar.
 ## 4. Adicionar uma casa pelo anúncio
 No site, abra **Adicionar casa**. O método recomendado é copiar o texto visível da página do Airbnb, colá-lo na caixa de texto e clicar em **Extrair dados do texto copiado**. Confira os campos preenchidos, ajuste o que faltar e clique em **Adicionar casa**. O botão **Tentar obter alguns dados só pelo link** pode retornar menos informações, pois o Airbnb nem sempre expõe os detalhes. O preço só será importado se estiver no texto; confirme datas e hóspedes. Camas, comodidades e distâncias também podem precisar de revisão.
 
-## 5. Importante
+## 5. Atualizar o programa no Windows
+Com o servidor parado, clique duas vezes em `atualizar.bat` na pasta do projeto. O atualizador baixa os arquivos mais recentes do GitHub e não altera `dados.json`, onde ficam os dados da lista. Depois, inicie o servidor e o túnel novamente. Para obter o atualizador pela primeira vez, baixe e extraia a versão mais recente do projeto.
+
+## 6. Importante
 - Seu computador precisa ficar ligado, com o servidor (e o túnel) rodando, enquanto o grupo usa.
 - Os dados ficam no arquivo `dados.json`, nesta pasta. Faça uma cópia dele se quiser guardar.
 - Para desligar: Ctrl+C nos terminais.
