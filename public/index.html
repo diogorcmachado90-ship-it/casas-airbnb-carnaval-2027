@@ -59,6 +59,7 @@ a.btn{margin-top:auto;text-align:center;text-decoration:none;color:var(--ac);bor
 <details id="add"><summary>➕ Adicionar casa</summary>
 <div class="af">
 <label class="full">Link do Airbnb<input id="a_url" placeholder="https://www.airbnb.com.br/rooms/..."></label>
+<div class="full"><button type="button" id="a_import">Ler anúncio e preencher dados</button> <span id="a_import_status" class="warn"></span></div>
 <label>Nome<input id="a_t"></label>
 <label>Local (bairro · cidade)<input id="a_loc"></label>
 <label>Região/cidade (p/ filtro)<input id="a_reg" placeholder="ex.: Guarujá"></label>
@@ -76,7 +77,7 @@ a.btn{margin-top:auto;text-align:center;text-decoration:none;color:var(--ac);bor
 <datalist id="dl_ch"><option value="Sim"><option value="Não"></datalist>
 <label class="full">Observações<input id="a_w"></label>
 <label class="chk"><input id="a_pe" type="checkbox"> Perto da praia (≤ ~400 m)</label>
-<div class="full"><button id="a_go">Adicionar</button></div>
+<div class="full"><button type="button" id="a_go">Adicionar casa</button></div>
 </div></details>
 <p class="cnt" id="stt"></p>
 <p class="cnt"><span id="ct"></span> <button id="rs" class="ghost rm" style="display:none">Restaurar removidas</button></p>
@@ -156,6 +157,17 @@ removeHouse(h)});
 g.appendChild(c)})}
 ["n","s","q","r","mx","nm","fp","fc","fv","fpi","fch","far"].forEach(function(i){$(i).addEventListener("input",render)});
 $("rs").addEventListener("click",function(){restoreAll()});
+$("a_import").addEventListener("click",function(){
+var button=$("a_import"),link=$("a_url").value.trim();
+if(!link){$("a_import_status").textContent="Cole o link do anúncio primeiro."; $("a_url").focus();return}
+button.disabled=true;$("a_import_status").textContent="Lendo o anúncio…";
+api("POST","/api/airbnb-read",{url:link}).then(function(d){
+var h=d.house||{},fields={a_t:h.t,a_loc:h.loc,a_reg:h.reg,a_cap:h.cap,a_q:h.q,a_n:h.nota,a_w:h.w,a_ar:h.ar,a_pi:h.pi,a_ch:h.ch};
+Object.keys(fields).forEach(function(id){var v=fields[id];if(v!==null&&v!==undefined&&v!==""&&!$(id).value)$(id).value=v});
+if(h.url)$("a_url").value=h.url;
+$("a_import_status").textContent="Dados encontrados preenchidos. Confira os campos; preço, camas e outros detalhes podem não estar no anúncio.";
+}).catch(function(e){$("a_import_status").textContent="Não foi possível ler: "+e.message}).then(function(){button.disabled=false});
+});
 $("a_go").addEventListener("click",function(){
 var t=$("a_t").value.trim(),u=$("a_url").value.trim();
 if(!t&&!u){$("a_t").placeholder="Informe o nome ou o link";$("a_t").focus();return}
@@ -170,7 +182,7 @@ function setStatus(t){$("stt").textContent=t}
 function werr(){setStatus("⚠️ Não deu para salvar. Veja se o servidor está ligado.")}
 function rr(){var a=document.activeElement;if(a&&a.tagName==="INPUT"&&a.closest&&a.closest(".price")){PEND=1;return}render()}
 document.addEventListener("focusout",function(){if(PEND){PEND=0;setTimeout(render,50)}});
-function api(m,u,b){return fetch(u,{method:m,headers:{"Content-Type":"application/json"},body:b?JSON.stringify(b):undefined}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
+function api(m,u,b){return fetch(u,{method:m,headers:{"Content-Type":"application/json"},body:b?JSON.stringify(b):undefined}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.erro||"Erro "+r.status);return d})})}
 function apply(d){ST.P=d.P||{};ST.R=d.R||[];ST.C=d.C||[];fillRegs();rr()}
 function load(){api("GET","/api/state").then(function(d){var j=JSON.stringify(d);if(j!==LAST){LAST=j;apply(d)}setStatus("🟢 Conectado ao servidor: todos veem a mesma lista (atualiza sozinha)")}).catch(function(){setStatus("⚠️ Sem conexão com o servidor")})}
 function setPrice(id,v){ST.P[id]=v;render();api("PUT","/api/price",{id:id,v:v}).catch(werr)}

@@ -45,7 +45,10 @@ Instale e configure o ngrok (https://ngrok.com) e rode:
 
 Mande ao grupo o endereço `https://...` que ele mostrar.
 
-## 4. Importante
+## 4. Importar uma casa pelo link
+No site, abra **Adicionar casa**, cole o link completo do anúncio e clique em **Ler anúncio e preencher dados**. O sistema tenta importar nome, localização, capacidade, quartos, nota e comodidades públicas; confira e ajuste o que aparecer e depois clique em **Adicionar casa**. O Airbnb pode bloquear a leitura ou não fornecer todos os campos. Preço para as datas, camas por quarto e distância da praia precisam ser conferidos manualmente.
+
+## 5. Importante
 - Seu computador precisa ficar ligado, com o servidor (e o túnel) rodando, enquanto o grupo usa.
 - Os dados ficam no arquivo `dados.json`, nesta pasta. Faça uma cópia dele se quiser guardar.
 - Para desligar: Ctrl+C nos terminais.
