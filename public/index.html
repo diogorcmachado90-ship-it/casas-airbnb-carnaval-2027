@@ -86,6 +86,7 @@ a.btn{margin-top:auto;text-align:center;text-decoration:none;color:var(--ac);bor
 <div class="full"><button type="button" id="a_go">Adicionar casa</button></div>
 </div></details>
 <p class="cnt" id="stt"></p>
+<p><button type="button" id="export_csv" class="ghost">Baixar lista completa para Excel (CSV)</button></p>
 <p class="cnt"><span id="ct"></span> <button id="rs" class="ghost rm" style="display:none">Restaurar removidas</button></p>
 <div id="g" class="grid"></div>
 <p class="note">Para adicionar uma casa, tente ler o link ou cole o texto copiado do anúncio; confira os campos antes de adicionar. O preço só é preenchido se estiver visível no texto e corresponder às datas e hóspedes desejados. Casas e valores ficam salvos no servidor e todos que abrirem o endereço veem a mesma lista.</p>
@@ -113,6 +114,27 @@ function N(){return Math.max(1,parseInt($("n").value)||10)}
 function all(){return H.filter(function(h){return ST.R.indexOf(h.id)<0}).concat(ST.C)}
 function pp(h){var v=parseFloat(ST.P[h.id]);return v>0?v/N():null}
 function url(h){if(h.url)return /^https?:\/\//.test(h.url)?h.url:"#";return"https://www.airbnb.com.br/rooms/"+h.id+"?adults=10&check_in=2027-02-05&check_out=2027-02-10"}
+function csvCell(value){
+if(value==null)return '""';
+var text=typeof value==="number"&&Number.isFinite(value)?String(value).replace(".",","):String(value);
+if(typeof value!=="number"&&/^[\s]*[=+\-@\t\r\n]/.test(text))text="'"+text;
+return '"'+text.replace(/"/g,'""')+'"';
+}
+function csvList(houses,prices,people){
+var rows=[["Nome","Local","Região","Distância da praia","Perto da praia (até ~400 m)","Capacidade","Quartos","Camas","Banheiros","Nota","Avaliações","Camas por quarto","Ar-condicionado","Piscina","Churrasqueira","Comodidades","Observações","Total da estadia (R$)","Pessoas para divisão","Valor por pessoa (R$)","Link"]];
+houses.forEach(function(h){
+var price=Number(prices[h.id]),hasPrice=prices[h.id]!=null&&prices[h.id]!==""&&Number.isFinite(price)&&price>0;
+var link=h.custom&&!h.url?"":url(h);
+rows.push([h.t,h.loc,h.reg,h.d,h.pe?"Sim":"Não informado",h.cap,h.q,h.c,h.b,h.nota,h.av,(h.bd||[]).join("\n"),h.ar,h.pi,h.ch,(h.am||[]).join("\n"),h.w,hasPrice?price:null,people,hasPrice?Number((price/people).toFixed(2)):null,link==="#"?"":link]);
+});
+return "\ufeff"+rows.map(function(row){return row.map(csvCell).join(";")}).join("\r\n")+"\r\n";
+}
+$("export_csv").addEventListener("click",function(){
+var file=new Blob([csvList(all(),ST.P,N())],{type:"text/csv;charset=utf-8"});
+var objectUrl=URL.createObjectURL(file),link=document.createElement("a");
+link.href=objectUrl;link.download="casas-carnaval-2027.csv";document.body.appendChild(link);link.click();link.remove();
+setTimeout(function(){URL.revokeObjectURL(objectUrl)},1000);
+});
 function regs(){var r=[];all().forEach(function(h){if(h.reg&&r.indexOf(h.reg)<0)r.push(h.reg)});return r.sort()}
 function fillRegs(){var c=$("r").value,o='<option value="">Todas</option>';regs().forEach(function(r){o+='<option>'+esc(r)+'</option>'});$("r").innerHTML=o;$("r").value=regs().indexOf(c)>=0?c:""}
 function KEY(h){var nf="<i>não informado</i>";

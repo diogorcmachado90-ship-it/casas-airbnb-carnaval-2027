@@ -51,7 +51,10 @@ No site, abra **Adicionar casa**. O método recomendado é copiar o texto visív
 ## 5. Atualizar o programa no Windows
 Com o servidor parado, clique duas vezes em `atualizar.bat` na pasta do projeto. O atualizador baixa os arquivos mais recentes do GitHub e não altera `dados.json`, onde ficam os dados da lista. Depois, inicie o servidor e o túnel novamente. Para obter o atualizador pela primeira vez, baixe e extraia a versão mais recente do projeto.
 
-## 6. Importante
+## 6. Exportar a lista
+Clique em **Baixar lista completa para Excel (CSV)** para baixar um arquivo que pode ser aberto no Excel ou compartilhado. Ele inclui todas as casas não removidas, independentemente dos filtros, os preços salvos e o valor por pessoa calculado com o número de pessoas escolhido. O arquivo reflete a lista que está na página; confira se ela está conectada ao servidor antes de exportar. O CSV não substitui o backup de `dados.json` e não pode ser restaurado no site.
+
+## 7. Importante
 - Seu computador precisa ficar ligado, com o servidor (e o túnel) rodando, enquanto o grupo usa.
 - Os dados ficam no arquivo `dados.json`, nesta pasta. Faça uma cópia dele se quiser guardar.
 - Para desligar: Ctrl+C nos terminais.
